@@ -8,7 +8,9 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+@ExtendWith(ScreenshotExtension.class)
 public abstract class BaseTest {
 
     private static final ThreadLocal<Playwright> PLAYWRIGHT = new ThreadLocal<>();
