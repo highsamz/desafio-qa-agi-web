@@ -26,3 +26,22 @@ rastreio de passos (`@Step`).
 
 ## Versionamento
 Fluxo enxuto com `main` (estável) e `develop` (integração).
+
+# Decisões Técnicas — Teste Web
+
+## Arquitetura
+- **Page Object Model** com `BaseTest` (herança) gerenciando o ciclo de vida
+  do browser. Herança escolhida por simplicidade adequada ao escopo.
+- **Thread-safety via ThreadLocal**: Playwright/Browser/Context/Page isolados
+  por thread. O projeto está pronto para execução paralela (o Playwright não é
+  thread-safe e a forma recomendada é uma instância por thread). Mantido
+  sequencial neste escopo por serem poucos cenários, mas a base já suporta...
+- **Configuração externalizada** (`TestConfig`): precedência
+  `-Dprop > variável de ambiente > config.properties > default`, permitindo
+  headless no CI e headed no local sem editar arquivo.
+
+## Captura de evidência
+- Screenshot em falha via **`AfterTestExecutionCallback`**, não `TestWatcher`.
+  Motivo: o `TestWatcher.testFailed` roda **depois** do `@AfterEach`, que já
+  fechou a página — capturaria uma página inexistente. O
+  `AfterTestExecutionCallback` roda antes do teardown, com a página ainda viva.
