@@ -23,7 +23,8 @@ public abstract class BaseTest {
         Playwright playwright = Playwright.create();
         Browser browser = playwright.chromium()
                 .launch(new LaunchOptions().setHeadless(TestConfig.isHeadless()));
-        BrowserContext context = browser.newContext();
+        BrowserContext context = browser.newContext(
+                new Browser.NewContextOptions().setBaseURL(TestConfig.baseUrl()));
         Page page = context.newPage();
 
         PLAYWRIGHT.set(playwright);
