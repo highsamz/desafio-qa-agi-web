@@ -45,3 +45,37 @@ Fluxo enxuto com `main` (estável) e `develop` (integração).
   Motivo: o `TestWatcher.testFailed` roda **depois** do `@AfterEach`, que já
   fechou a página — capturaria uma página inexistente. O
   `AfterTestExecutionCallback` roda antes do teardown, com a página ainda viva.
+
+
+## Investigação: comportamento da busca no desktop
+
+Durante a exploração inicial do blog, notei que no **desktop** a página
+carregava aparentemente vazia e a lupa de busca não respondia (ao clicar,
+a URL apenas mudava para `/#`), enquanto no **mobile** tudo funcionava.
+
+### Causa raiz
+O blog usa o recurso **"Delay JS" do LiteSpeed** (plugin de performance do
+WordPress), que adia a execução do JavaScript até a **primeira interação real
+do usuário** (mouse, scroll ou toque). No desktop, sem interação, o script da
+busca não é acionado, por isso a página parece vazia e o clique na lupa cai
+no comportamento padrão do link (`href="#"`).
+
+### Evidência
+- Console exibindo scripts com `type="litespeed/javascript"` e log
+  `[LiteSpeed] Start Lazy Load`.
+- Ao mover o mouse / rolar a página antes de interagir, o conteúdo e a busca
+  passam a funcionar normalmente.
+- A busca no backend está íntegra: `blog.agibank.com.br/?s=<termo>` retorna os
+  resultados diretamente.
+
+### Impacto na automação
+Em execução headless, sem interação genuína, o JS pode não carregar o que
+faria os testes falharem por um motivo alheio ao comportamento real do site.
+Estratégia adotada:
+1. **Interação inicial** (scroll) após o carregamento, para "acordar" o JS
+   antes de interagir com a busca via UI.
+2. **Acesso direto pela URL de busca** (`?s=<termo>`) como caminho estável e
+   determinístico para os cenários de resultados.
+
+Optei por manter os testes no **blog** (escopo original do desafio),
+contornando o obstáculo de forma consciente, em vez de migrar para outro site.
