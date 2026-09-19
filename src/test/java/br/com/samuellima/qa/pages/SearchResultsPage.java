@@ -1,6 +1,5 @@
 package br.com.samuellima.qa.pages;
 
-import br.com.samuellima.qa.config.TestConfig;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
@@ -14,7 +13,6 @@ public class SearchResultsPage {
 
     private final Locator heading;
     private final Locator results;
-    private final Locator resultTitles;
     private final Locator emptyMessage;
     private final Locator searchField;
     private final Locator searchSubmit;
@@ -23,8 +21,7 @@ public class SearchResultsPage {
         this.page = page;
         this.heading = page.getByRole(AriaRole.HEADING,
                 new Page.GetByRoleOptions().setLevel(1));
-        this.results = page.locator("article");
-        this.resultTitles = page.locator("a[rel='bookmark']");
+        this.results = page.locator("a[rel='bookmark']");
         this.emptyMessage = page.getByText("nada foi encontrado");
         this.searchField = page.getByPlaceholder("Digite sua busca")
                 .locator("visible=true");
@@ -53,11 +50,11 @@ public class SearchResultsPage {
         return results.count();
     }
 
-    public List<String> resultTitles() {
-        return resultTitles.allTextContents();
-    }
-
     public boolean isEmptyMessageVisible() {
         return emptyMessage.isVisible();
+    }
+
+    public List<String> resultTitles() {
+        return results.allTextContents();
     }
 }

@@ -116,3 +116,11 @@ exercitando a interface de forma estável.
   o estilo idiomático do Playwright. O strict mode do Playwright ainda ajudou
   a identificar um campo de busca duplicado (sticky vs. corpo), resolvido
   filtrando pelo elemento visível.
+
+### Observação
+O enunciado referencia a lupa do header. Durante a investigação, identifiquei 
+que esse elemento depende de interação prévia no desktop (Delay JS do LiteSpeed), 
+o que o torna instável para automação headless. Optei por exercitar a mesma funcionalidade 
+de busca por caminhos estáveis — a URL de busca (?s=) e o campo funcional da página de resultados  
+cobrindo o comportamento real sem depender do elemento afetado. 
+O comportamento da lupa está documentado como achado
