@@ -21,8 +21,11 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Instalar navegadores do Playwright (com dependências de SO)
-        run: mvn -q test-compile && mvn -q exec:java -e -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install --with-deps chromium" -Dexec.classpathScope=test
+      - name: Instalar navegadores do Playwright
+        run: mvn -q test-compile && mvn -q exec:java -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install chromium" -Dexec.classpathScope=test
+
+      - name: Instalar dependências de SO do Playwright
+        run: sudo mvn -q exec:java -Dexec.mainClass=com.microsoft.playwright.CLI -Dexec.args="install-deps chromium" -Dexec.classpathScope=test
 
       - name: Executar testes (headless)
         run: mvn test -Dheadless=true
