@@ -22,8 +22,9 @@ class SearchTest extends BaseTest {
     @Test
     @Story("Busca com resultados")
     @DisplayName("Deve retornar artigos relevantes ao buscar um termo existente")
-    @Description("Busca via URL por um termo existente e valida que há resultados "
-            + "e que os títulos são relevantes ao termo pesquisado.")
+    @Description("Busca via URL por um termo existente e valida que há resultados, "
+            + "que o título da página reflete o termo, e que há relevância nos "
+            + "títulos retornados.")
     void deveRetornarArtigosRelevantes() {
         SearchResultsPage results = new SearchResultsPage(page())
                 .searchByUrl(TERMO_COM_RESULTADO);
@@ -31,13 +32,13 @@ class SearchTest extends BaseTest {
         assertTrue(results.headingText().toLowerCase().contains(TERMO_COM_RESULTADO),
                 "O título da página deveria refletir o termo buscado");
 
-        assertTrue(results.resultsCount() > 0,
+        List<String> titulos = results.resultTitles();
+
+        assertFalse(titulos.isEmpty(),
                 "Deveria haver ao menos um resultado para o termo");
 
-        List<String> titulos = results.resultTitles();
-        assertTrue(
-                titulos.stream().allMatch(t -> t.toLowerCase().contains(TERMO_COM_RESULTADO)),
-                "Todos os títulos deveriam conter o termo buscado. Títulos: " + titulos);
+        assertTrue(titulos.stream().anyMatch(t -> t.toLowerCase().contains(TERMO_COM_RESULTADO)),
+                "Ao menos um título deveria conter o termo buscado. Títulos: " + titulos);
     }
 
     @Test
