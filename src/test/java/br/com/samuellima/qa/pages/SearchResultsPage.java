@@ -26,21 +26,22 @@ public class SearchResultsPage {
         this.results = page.locator("article");
         this.resultTitles = page.locator("a[rel='bookmark']");
         this.emptyMessage = page.getByText("nada foi encontrado");
-        this.searchField = page.getByPlaceholder("Digite sua busca");
+        this.searchField = page.getByPlaceholder("Digite sua busca")
+                .locator("visible=true");
         this.searchSubmit = page.getByRole(AriaRole.BUTTON,
                 new Page.GetByRoleOptions().setName("Pesquisar"));
     }
 
     public SearchResultsPage searchByUrl(String term) {
         String encoded = URLEncoder.encode(term, StandardCharsets.UTF_8);
-        page.navigate("/?s=" + encoded);   // resolve contra a baseURL do contexto
+        page.navigate("/?s=" + encoded);
         return this;
     }
 
     public SearchResultsPage searchByField(String term) {
         searchField.fill(term);
         searchSubmit.click();
-        page.waitForLoadState(); // WordPress recarrega para nova URL
+        page.waitForLoadState();
         return this;
     }
 
