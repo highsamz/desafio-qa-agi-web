@@ -32,7 +32,7 @@ public abstract class BaseTest {
         CONTEXT.set(context);
         PAGE.set(page);
 
-        page.navigate(TestConfig.baseUrl());
+        page.navigate("/");
     }
 
     @AfterEach
